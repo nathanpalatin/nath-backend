@@ -3,13 +3,20 @@ import http from 'node:http'
 import { json } from './middlewares/json.js'
 
 import { v4 } from 'uuid'
+import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+
+const payload = { user_id: 123 }
+const secretKey = 'suaChaveSecreta'
+
+const token = jwt.sign(payload, secretKey)
 
 const uuid = v4()
 
 const users = []
 
 const server = http.createServer(async (req, res) => {
+
   const { method, url } = req
 
   await json(req, res)
@@ -34,13 +41,13 @@ const server = http.createServer(async (req, res) => {
         email,
         password: hashedPassword,
         avatar,
+        token
       },
     )
 
     return res
       .writeHead(201)
-      .end('Usuário criado com sucesso!')
-      .end(token)
+      .end(`Usuário criado com sucesso`)
   }
 
   return res
