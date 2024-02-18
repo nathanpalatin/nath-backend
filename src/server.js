@@ -6,8 +6,9 @@ const server = http.createServer((req, res) => {
   const { method, url } = req
 
   if (method === 'GET' && url === '/users') {
-    res.setHeader('Content-Type', 'application/json')
-    return res.end(JSON.stringify(users));
+    return res
+      .setHeader('Content-Type', 'application/json')
+      .end(JSON.stringify(users));
   }
 
   if (method === 'POST' && url === '/users') {
@@ -21,12 +22,14 @@ const server = http.createServer((req, res) => {
       },
     )
 
-    res.setHeader('Content-Type', 'text/plain')
-    return res.end('Criação de usuários')
+    return res
+      .writeHead(201)
+      .end('Criação de usuários')
   }
 
-  res.setHeader('Content-Type', 'text/plain')
-  res.end('Hello world!')
+  return res
+    .writeHead(404)
+    .end('Not Found. 😅')
 });
 
-server.listen(3333);
+server.listen(3333)
