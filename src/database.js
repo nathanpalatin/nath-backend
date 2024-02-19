@@ -15,9 +15,14 @@ export class Database {
       })
   }
 
-  #persist() {
-    fs.writeFile(databasePath, JSON.stringify(this.#database))
+  async #persist() {
+    try {
+      await fs.writeFile(databasePath, JSON.stringify(this.#database));
+    } catch (error) {
+      console.error('Erro ao persistir os dados:', error);
+    }
   }
+
 
   select(table) {
     const data = this.#database[table] ?? []
@@ -27,13 +32,19 @@ export class Database {
 
   insert(table, data) {
     if (Array.isArray(this.#database[table])) {
-      this.#database[table].push(data)
+      const userIndex = this.#database[table].findIndex(user => user.id === data.id)
+      if (userIndex !== -1) {
+        this.#database[table][userIndex] = data
+      } else {
+        this.#database[table].push(data)
+      }
     } else {
-      this.#database[table] = data
+      this.#database[table] = [data]
     }
 
     this.#persist()
 
     return data
   }
+
 }

@@ -1,59 +1,27 @@
 import http from 'node:http'
-import { randomUUID } from 'node:crypto'
 
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 
-import { Database } from './database.js'
 import { auth } from './middlewares/auth.js'
+import { routes } from './routes.js'
 
-const database = new Database()
 
-const payload = { id: randomUUID }
-const secretKey = 'Mudaromundo2024'
-
-const token = jwt.sign(payload, secretKey)
 
 const server = http.createServer(async (req, res) => {
 
   const { method, url } = req
 
-  await json(req, res)
+  await auth(req, res)
 
-  if (method === 'GET' && url === '/users') {
+  const route = routes.find(route => {
+    return route.method === method && route.path === url
+  })
 
-    const users = database.select('users')
-
-    return res
-      .end(JSON.stringify(users))
-  }
-
-  if (method === 'POST' && url === '/users') {
-
-    const { name, email, avatar, password, username } = req.body
-
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    const user = {
-      id: randomUUID(),
-      name,
-      username,
-      email,
-      password: hashedPassword,
-      avatar,
-      token
-    }
-
-
-    database.insert('users', user)
-
-    return res
-      .writeHead(201)
-      .end(`Usuário criado com sucesso!`)
+  if (route) {
+    return route.handler(req, res)
   }
 
   return res
-    .writeHead(200)
+    .writeHead(404)
     .end(`Fala, dev! Essa rota é a de usuarios, preciso do método para executar a Query :).`)
 });
 
