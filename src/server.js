@@ -1,10 +1,7 @@
 import http from 'node:http'
 
-
 import { auth } from './middlewares/auth.js'
 import { routes } from './routes.js'
-
-
 
 const server = http.createServer(async (req, res) => {
 

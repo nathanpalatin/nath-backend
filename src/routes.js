@@ -43,8 +43,6 @@ export const routes = [
 
       await database.insert('users', user)
 
-
-
       return res
         .writeHead(201)
         .end(`Usuário criado com sucesso! ${token}`)
