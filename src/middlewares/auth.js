@@ -1,4 +1,4 @@
-export async function json(req, res) {
+export async function auth(req, res) {
   const { method, url } = req
 
   const buffers = []

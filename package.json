@@ -16,7 +16,6 @@
     "eslint": "^8.56.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "uuid": "^9.0.1"
+    "jsonwebtoken": "^9.0.2"
   }
 }

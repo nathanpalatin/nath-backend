@@ -1,20 +1,18 @@
 import http from 'node:http'
+import { randomUUID } from 'node:crypto'
 
-import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 import { Database } from './database.js'
-import { json } from './middlewares/json.js'
+import { auth } from './middlewares/auth.js'
 
 const database = new Database()
 
-const payload = { user_id: 123 }
-const secretKey = '2024Mudar@'
+const payload = { id: randomUUID }
+const secretKey = 'Mudaromundo2024'
 
 const token = jwt.sign(payload, secretKey)
-
-const uuid = v4()
 
 const server = http.createServer(async (req, res) => {
 
@@ -37,7 +35,7 @@ const server = http.createServer(async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const user = {
-      id: uuid,
+      id: randomUUID(),
       name,
       username,
       email,
@@ -51,7 +49,7 @@ const server = http.createServer(async (req, res) => {
 
     return res
       .writeHead(201)
-      .end(`Usuário criado com sucesso`)
+      .end(`Usuário criado com sucesso!`)
   }
 
   return res
