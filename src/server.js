@@ -1,19 +1,20 @@
 import http from 'node:http'
 
+import { v4 } from 'uuid'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
+import { Database } from './database.js'
 import { json } from './middlewares/json.js'
 
-import { v4 } from 'uuid'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+const database = new Database()
 
 const payload = { user_id: 123 }
-const secretKey = 'suaChaveSecreta'
+const secretKey = '2024Mudar@'
 
 const token = jwt.sign(payload, secretKey)
 
 const uuid = v4()
-
-const users = []
 
 const server = http.createServer(async (req, res) => {
 
@@ -22,8 +23,10 @@ const server = http.createServer(async (req, res) => {
   await json(req, res)
 
   if (method === 'GET' && url === '/users') {
+
+    const users = database.select('users')
+
     return res
-      .setHeader('Content-Type', 'application/json')
       .end(JSON.stringify(users))
   }
 
@@ -33,17 +36,18 @@ const server = http.createServer(async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    users.push(
-      {
-        id: uuid,
-        name,
-        username,
-        email,
-        password: hashedPassword,
-        avatar,
-        token
-      },
-    )
+    const user = {
+      id: uuid,
+      name,
+      username,
+      email,
+      password: hashedPassword,
+      avatar,
+      token
+    }
+
+
+    database.insert('users', user)
 
     return res
       .writeHead(201)
@@ -51,8 +55,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   return res
-    .writeHead(404)
-    .end(`Fala, dev!`)
+    .writeHead(200)
+    .end(`Fala, dev! Essa rota é a de usuarios, preciso do método para executar a Query :).`)
 });
 
 server.listen(3333)
