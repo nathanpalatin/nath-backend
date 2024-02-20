@@ -28,7 +28,7 @@ export const routes = [
     path: buildRoutePath('/users'),
     handler: async (req, res) => {
 
-      const { name, email, password, avatar, username, created_at, updated_at } = req.body
+      const { name, email, password, avatar, username } = req.body
 
       const hashedPassword = await bcrypt.hash(password, 10)
 
