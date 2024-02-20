@@ -56,9 +56,30 @@ export const routes = [
 
       const { id } = req.params
 
+
       database.delete('users', id)
 
       return res.writeHead(204).end(`Usuário removido com sucesso!`)
+
+    }
+  },
+  {
+    method: 'PUT',
+    path: buildRoutePath('/users/:id'),
+    handler: (req, res) => {
+
+      const { id } = req.params
+      const { name, email, password, username, avatar } = req.body
+
+      database.update('users', id, {
+        name,
+        email,
+        password,
+        username,
+        avatar
+      })
+
+      return res.writeHead(204).end(`Usuário atualizado com sucesso!`)
 
     }
   },
