@@ -1,11 +1,15 @@
 import { Database } from './database.js'
 import { randomUUID } from 'node:crypto'
 
+import { config } from 'dotenv'
+
+config()
+
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { buildRoutePath } from './utils/build-route-path.js'
 
-const secretKey = 'Mudaromundo2024'
+const secretKey = process.env.AUTHKEY_JWT
 
 const database = new Database()
 
