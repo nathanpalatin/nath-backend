@@ -77,16 +77,46 @@ export const routes = [
       const { id } = req.params
       const { name, email, password, username, avatar } = req.body
 
-      database.update('users', id, {
+      const user = database.select('users')
+
+      const updated_user = {
         name,
         email,
         password,
         username,
+        created_at: user[0].created_at,
+        updated_at: new Date().getHours - 3,
         avatar
-      })
+      }
+
+      database.update('users', id, updated_user)
 
       return res.writeHead(204).end(`Usuário atualizado com sucesso!`)
 
     }
   },
+  {
+    method: 'POST',
+    path: buildRoutePath('/login'),
+    handler: async (req, res) => {
+
+      const { username, password } = req.body
+
+      const user = database.select('users')
+
+      if (!user[0].username) {
+        return res.writeHead(401).end('Usuário não encontrado')
+      }
+
+      const validPassword = await bcrypt.compare(password, user[0].password)
+
+
+      if (!validPassword) {
+        return res.writeHead(401).end('Senha incorreta')
+      }
+
+      return res.writeHead(200).end(user[0].token)
+    },
+  }
+
 ]
