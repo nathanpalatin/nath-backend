@@ -1,17 +1,17 @@
-import { Database } from './database.js'
-import { randomUUID } from 'node:crypto'
-
-import { config } from 'dotenv'
-
-config()
-
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { randomUUID } from 'node:crypto'
+
+import { Database } from './database.js'
+const database = new Database()
+
+import { configDotenv } from 'dotenv'
+
+configDotenv()
+
 import { buildRoutePath } from './utils/build-route-path.js'
 
 const secretKey = process.env.AUTHKEY_JWT
-
-const database = new Database()
 
 export const routes = [
   {
@@ -62,7 +62,6 @@ export const routes = [
 
       const { id } = req.params
 
-
       database.delete('users', id)
 
       return res.writeHead(204).end(`Usuário removido com sucesso!`)
@@ -85,7 +84,7 @@ export const routes = [
         password,
         username,
         created_at: user[0].created_at,
-        updated_at: new Date().getHours - 3,
+        updated_at: new Date(),
         avatar
       }
 
@@ -109,7 +108,6 @@ export const routes = [
       }
 
       const validPassword = await bcrypt.compare(password, user[0].password)
-
 
       if (!validPassword) {
         return res.writeHead(401).end('Senha incorreta')
