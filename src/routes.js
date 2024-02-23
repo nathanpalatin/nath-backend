@@ -114,7 +114,22 @@ export const routes = [
       }
 
       return res.writeHead(200).end(user[0].token)
-    },
-  }
+    }
+  },
+  {
+    method: 'POST',
+    path: buildRoutePath('/password'),
+    handler: async (req, res) => {
 
+      const { credential } = req.body
+
+      const user = database.select('users')
+
+      if (credential !== user[0].username || credential !== user[0].email) {
+        return res.writeHead(401).end('Usuário não encontrado')
+      }
+
+      return res.writeHead(200).end(user[0].password)
+    }
+  }
 ]
