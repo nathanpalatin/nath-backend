@@ -16,7 +16,9 @@
     "eslint": "^8.56.0"
   },
   "dependencies": {
+    "@prisma/client": "5.10.2",
     "dotenv": "^16.4.5",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.10.2"
   }
 }
